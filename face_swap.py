@@ -11,6 +11,7 @@ img2 = cv2.imread(input('Filename of the second image:\n'), cv2.IMREAD_COLOR)
 
 EYES = list(range(17, 27)) + list(range(36, 48))
 NOSE_MOUTH = list(range(27, 35)) + list(range(48, 61))
+
 def getM(kp1, kp2):
 
     kp1 = np.float64(kp1)
@@ -32,7 +33,7 @@ def getM(kp1, kp2):
 
     R = (U * Vt).T
 
-    M = np.vstakc([np.hstack(((s2 / s1) * R, c2.T - (s2 / s1) * R * c1.T))])
+    M = np.vstack([np.hstack(((s2 / s1) * R, c2.T - (s2 / s1) * R * c1.T))])
 
     return M
 
@@ -54,7 +55,7 @@ def correct_color(img1, img2, landmarks1):
     return corrected_img
 
 
-def get_mask(img1, mask1, img2, mask2):
+def mask_img(img1, mask1, img2, mask2):
 
     combined_mask = np.max([mask1, mask2], axis = 0)
     inv_combined_mask = 1.0 - combined_mask
@@ -68,14 +69,14 @@ def get_landmarks(img):
     bbox = detector(img, 1)
 
     landmark_list = []
-    for i in predictor(img, bbox[0]).partks():
-        landmarks.append([i.x, i.y])
+    for i in predictor(img, bbox[0]).parts():
+        landmark_list.append([i.x, i.y])
 
     return np.matrix(landmark_list)
 
 def get_mask(img, landmarks):
 
-    img - np.zeros(img.shape[:2], dtype=np.float64)
+    img = np.zeros(img.shape[:2], dtype=np.float64)
 
     eye_point = cv2.convexHull(landmarks[EYES])
     nm_pont = cv2.convexHull(landmarks[NOSE_MOUTH])
@@ -103,7 +104,7 @@ def warp_img(img, M, dshape):
 
 def faceswap(img1, img2):
     landmarks1 = get_landmarks(img1)
-    landmarks2 = get_landsmarks(img2)
+    landmarks2 = get_landmarks(img2)
 
     M = getM(landmarks1[EYES + NOSE_MOUTH], landmarks2[EYES + NOSE_MOUTH])
 
@@ -111,7 +112,7 @@ def faceswap(img1, img2):
     mask2 = get_mask(img2, landmarks2)
 
     warped_img2 = warp_img(img2, M, img1.shape)
-    waped_mask2 = warp_img(mask2, M, img1.shape)
+    warped_mask2 = warp_img(mask2, M, img1.shape)
 
     warped_corrected_img2 = correct_color(img1, warped_img2, landmarks1)
 
