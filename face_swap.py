@@ -6,7 +6,7 @@ from scipy.spatial import distance
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
-img1 = cv2.imread(input('Fileame of the first image:\n'), cv2.IMREAD_COLOR)
+img1 = cv2.imread(input('Filename of the first image:\n'), cv2.IMREAD_COLOR)
 img2 = cv2.imread(input('Filename of the second image:\n'), cv2.IMREAD_COLOR)
 
 EYES = list(range(17, 27)) + list(range(36, 48))
