@@ -1,4 +1,8 @@
 *.jpg
 *.png
 *.jpeg
+<<<<<<< HEAD
 ./__pycache__/*
+=======
+./__pycache__
+>>>>>>> 051e886fd97269c6c3c355e618af5e349b831fdc
