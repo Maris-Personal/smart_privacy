@@ -11,6 +11,12 @@ import dlib
 dlib_detector = dlib.get_frontal_face_detector()
 dlib_predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 
+def bgr2rgb(img):
+  # OpenCV's BGR to RGB
+  rgb = np.copy(img)
+  rgb[..., 0], rgb[..., 2] = img[..., 2], img[..., 0]
+  return rgb
+
 def list_imgpaths(imgfolder):
 	for fname in os.listdir(imgfolder):
 		if (fname.lower().endswith('.jpg') or
@@ -222,8 +228,6 @@ def averager(imgpaths):
 	dest_img[face_indexes] = result_image[face_indexes]
 
 	mask = mask_from_points(size, dest_points)
-
-	plt = plotter.Plotter(False, num_images = 1, out_filename = 'result.png')
-	plt.save(dest_img)
-
+	mpimg.imsave('./result.png', cv2.cvtColor(dest_img, cv2.COLOR_BGR2RGB))
+	
 averager(list_imgpaths('images'))
