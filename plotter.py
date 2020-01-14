@@ -60,8 +60,7 @@ class Plotter(object):
       filename = self.out_filename
 
     mpimg.imsave(filename, bgr2rgb(img))
-    print(filename + ' saved')
-
+    
   @check_do_plot
   def plot_one(self, img):
     p = plt.subplot(self.rows, self.cols, self.plot_counter)

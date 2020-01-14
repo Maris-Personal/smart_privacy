@@ -222,11 +222,8 @@ def averager(imgpaths):
 	dest_img[face_indexes] = result_image[face_indexes]
 
 	mask = mask_from_points(size, dest_points)
-
-	print('Averaged {} images'.format(num_images))
+	
 	plt = plotter.Plotter(False, num_images = 1, out_filename = 'result.png')
 	plt.save(dest_img)
-	plt.plot_one(dest_img)
-	plt.show()
 
 averager(list_imgpaths('images'))
