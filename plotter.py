@@ -1,7 +1,3 @@
-"""
-Plot and save images
-"""
-
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import os.path

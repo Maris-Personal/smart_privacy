@@ -152,7 +152,7 @@ def resize_image(img, scale):
 	new_height = int(scale * im_h)
 	new_width = int(scale * im_w)
 
-	return cv2.resize(img, (new_height, new_width))
+	return cv2.resize(img, (new_width, new_height ))
 
 def mask_from_points(size, points):
 	kernel = np.ones((10, 10), np.uint8)
