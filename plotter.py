@@ -10,13 +10,6 @@ def bgr2rgb(img):
   rgb[..., 0], rgb[..., 2] = img[..., 2], img[..., 0]
   return rgb
 
-def check_do_plot(func):
-  def inner(self, *args, **kwargs):
-    if self.do_plot:
-      func(self, *args, **kwargs)
-
-  return inner
-
 def check_do_save(func):
   def inner(self, *args, **kwargs):
     if self.do_save:
@@ -60,26 +53,3 @@ class Plotter(object):
       filename = self.out_filename
 
     mpimg.imsave(filename, bgr2rgb(img))
-    
-  @check_do_plot
-  def plot_one(self, img):
-    p = plt.subplot(self.rows, self.cols, self.plot_counter)
-    p.axes.get_xaxis().set_visible(False)
-    p.axes.get_yaxis().set_visible(False)
-    plt.imshow(bgr2rgb(img))
-    self.plot_counter += 1
-
-  @check_do_plot
-  def show(self):
-    plt.gcf().subplots_adjust(hspace=0.05, wspace=0,
-                              left=0, bottom=0, right=1, top=0.98)
-    plt.axis('off')
-    #plt.show()
-    plt.savefig('result.png')
-
-  @check_do_plot
-  def plot_mesh(self, points, tri, color='k'):
-    """ plot triangles """
-    for tri_indices in tri.simplices:
-      t_ext = [tri_indices[0], tri_indices[1], tri_indices[2], tri_indices[0]]
-      plt.plot(points[t_ext, 0], points[t_ext, 1], color)

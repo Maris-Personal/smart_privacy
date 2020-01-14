@@ -222,7 +222,7 @@ def averager(imgpaths):
 	dest_img[face_indexes] = result_image[face_indexes]
 
 	mask = mask_from_points(size, dest_points)
-	
+
 	plt = plotter.Plotter(False, num_images = 1, out_filename = 'result.png')
 	plt.save(dest_img)
 
