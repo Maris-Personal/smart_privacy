@@ -7,9 +7,11 @@ import os.path as path
 import plotter
 import scipy.spatial as spatial
 import dlib
+import time
+import imutils
 
 dlib_detector = dlib.get_frontal_face_detector()
-dlib_predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+dlib_predictor = dlib.shape_predictor('data/shape_predictor_68_face_landmarks.dat')
 
 def bgr2rgb(img):
   # OpenCV's BGR to RGB
@@ -134,7 +136,7 @@ def roi_coordinates(rect, size, scale):
 	roi_y = mid_y - int(new_h/2)
 
 	roi_x, border_x = positive_cap(roi_x)
-	roi_y, border_y = positive_cap(roi_y)
+	roi_y, border_y = positive_catp(roi_y)
 
 	return roi_x, roi_y, border_x, border_y
 
@@ -229,5 +231,5 @@ def averager(imgpaths):
 
 	mask = mask_from_points(size, dest_points)
 	mpimg.imsave('./result.png', cv2.cvtColor(dest_img, cv2.COLOR_BGR2RGB))
-	
+
 averager(list_imgpaths('images'))
