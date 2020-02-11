@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial import distance
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+predictor = dlib.shape_predictor('data/shape_predictor_68_face_landmarks.dat')
 
 def getM(kp1, kp2):
 
