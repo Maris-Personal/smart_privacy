@@ -2,3 +2,5 @@
 *.png
 *.jpeg
 __pycache__/
+images
+.vscode
