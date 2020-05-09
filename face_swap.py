@@ -129,5 +129,4 @@ NOSE_MOUTH = list(range(27, 35)) + list(range(48, 61))
 img1 = cv2.imread(input('Filename of the first image:\n'), cv2.IMREAD_COLOR)
 img2 = cv2.imread(input('Filename of the second image:\n'), cv2.IMREAD_COLOR)
 
-first_out = cv2.imwrite("first_to_second.png", faceswap(img1, img2))
-second_image = cv2.imwrite("second_to_first.png", faceswap(img2, img1))
+first_out = cv2.imwrite("anonymous.png", faceswap(img1, img2))
