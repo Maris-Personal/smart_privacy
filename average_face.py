@@ -1,10 +1,6 @@
 import os
-import os.path as path
-import time
 
-import imutils
 import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial import Delaunay
 
