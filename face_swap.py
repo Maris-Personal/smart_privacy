@@ -1,11 +1,46 @@
+import os
+import random
+
 import numpy as np
 from scipy.spatial import distance
 
 import cv2
 import dlib
+from imutils import face_utils
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('data/shape_predictor_68_face_landmarks.dat')
+
+MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+age_list = ['2', '6', '12', '20', '32', '43', '50', '60']
+gender_list = ['Male', 'Female']
+
+def initialize_caffe_models():
+
+    age_net = cv2.dnn.readNetFromCaffe(
+        'data/deploy_age.prototxt',
+        'data/age_net.caffemodel')
+
+    gender_net = cv2.dnn.readNetFromCaffe(
+        'data/deploy_gender.prototxt',
+        'data/gender_net.caffemodel')
+
+    return(age_net, gender_net)
+
+def predict_age(age_net, gender_net, x, y, w, h, face_img):
+    
+    face_img = face_img[y:y+h, x:x+w].copy()
+    blob = cv2.dnn.blobFromImage(
+        np.float32(face_img), 1, (227, 227), MODEL_MEAN_VALUES, swapRB=True)
+    gender_net.setInput(blob)
+    gender_preds = gender_net.forward()
+    gender = gender_list[gender_preds[0].argmax()]
+
+    age_net.setInput(blob)
+    age_preds = age_net.forward()
+    age = age_list[age_preds[0].argmax()]
+
+    return gender, age
 
 
 def getM(kp1, kp2):
@@ -67,11 +102,15 @@ def get_landmarks(img):
 
     bbox = detector(img, 1)
 
-    landmark_list = []
-    for i in predictor(img, bbox[0]).parts():
-        landmark_list.append([i.x, i.y])
+    
+    bbox_land = []
+    for j in range(len(bbox)):
+        landmark_list = []
+        for i in predictor(img, bbox[j]).parts():
+            landmark_list.append([i.x, i.y])
+        bbox_land.append(np.matrix(landmark_list))
 
-    return np.matrix(landmark_list)
+    return bbox, bbox_land
 
 
 def get_mask(img, landmarks):
@@ -104,29 +143,57 @@ def warp_img(img, M, dshape):
     return warped_img
 
 
-def faceswap(img1, img2):
-    landmarks1 = get_landmarks(img1)
-    landmarks2 = get_landmarks(img2)
+def faceswap(base_face):
+    base_list = []
+    age_net, gender_net = initialize_caffe_models()
+    bbox, base_land = get_landmarks(base_face)
+    for i in range(len(bbox)):
+        base_list.append([bbox[i], base_land[i]])
+    for faces in base_list:
+        x, y, w, h = face_utils.rect_to_bb(faces[0])
+        gender, age = predict_age(age_net, gender_net, x, y, w, h, base_face)
+        if gender == 'Male':
+            if int(age) <= 20:
+                swap_face = cv2.imread(
+                    r'./results/m/c/'+random.choice(os.listdir(r'./results/m/c/')), cv2.IMREAD_COLOR)
+            elif 20 < int(age) <= 50:
+                swap_face = cv2.imread(
+                    r'./results/m/a/'+random.choice(os.listdir(r'./results/m/a/')), cv2.IMREAD_COLOR)
+            elif int(age) > 50:
+                swap_face = cv2.imread(
+                    r'./results/m/o/'+random.choice(os.listdir(r'./results/m/o/')), cv2.IMREAD_COLOR)
+        elif gender == 'Female':
+            if int(age) <= 20:
+                swap_face = cv2.imread(
+                    r'./results/f/c/'+random.choice(os.listdir(r'./results/f/c/')), cv2.IMREAD_COLOR)
+            elif 20 < int(age) <= 50:
+                swap_face = cv2.imread(
+                    r'./results/f/a/'+random.choice(os.listdir(r'./results/f/a/')), cv2.IMREAD_COLOR)
+            elif int(age) > 50:
+                swap_face = cv2.imread(
+                    r'./results/f/o/'+random.choice(os.listdir(r'./results/f/o/')), cv2.IMREAD_COLOR)
+        _, landmarks = get_landmarks(swap_face)
+        base_landmarks = np.matrix(faces[1])
+        face_landmarks = landmarks[0]
+        M = getM(base_landmarks[EYES + NOSE_MOUTH], face_landmarks[EYES + NOSE_MOUTH])
 
-    M = getM(landmarks1[EYES + NOSE_MOUTH], landmarks2[EYES + NOSE_MOUTH])
+        mask1 = get_mask(base_face, base_landmarks)
+        mask2 = get_mask(swap_face, face_landmarks)
 
-    mask1 = get_mask(img1, landmarks1)
-    mask2 = get_mask(img2, landmarks2)
+        warped_img2 = warp_img(swap_face, M, base_face.shape)
+        warped_mask2 = warp_img(mask2, M, base_face.shape)
 
-    warped_img2 = warp_img(img2, M, img1.shape)
-    warped_mask2 = warp_img(mask2, M, img1.shape)
+        warped_corrected_img2 = correct_color(base_face, warped_img2, base_landmarks)
 
-    warped_corrected_img2 = correct_color(img1, warped_img2, landmarks1)
+        base_face = mask_img(
+            base_face, mask1, warped_corrected_img2, warped_mask2)
 
-    output = mask_img(img1, mask1, warped_corrected_img2, warped_mask2)
-
-    return output
+    return base_face
 
 
 EYES = list(range(17, 27)) + list(range(36, 48))
 NOSE_MOUTH = list(range(27, 35)) + list(range(48, 61))
 
-img1 = cv2.imread(input('Filename of the first image:\n'), cv2.IMREAD_COLOR)
-img2 = cv2.imread(input('Filename of the second image:\n'), cv2.IMREAD_COLOR)
-
-first_out = cv2.imwrite("anonymous.png", faceswap(img1, img2))
+base_face = cv2.imread('./group.jpg', cv2.IMREAD_COLOR)
+faces_swap = faceswap(base_face)
+first_out = cv2.imwrite("anonymous.png", faces_swap)
