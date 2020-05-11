@@ -4,3 +4,4 @@
 __pycache__/
 images
 .vscode
+similarity.py
