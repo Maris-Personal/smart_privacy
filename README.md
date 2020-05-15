@@ -9,7 +9,7 @@
  - Scipy
 
 ## Average Face
-
+### How to run
 On the final line of code, in the function "Averager" change the directory name to a folder that contains all images that you want to average and run the python code
     
    `averager(list_imgpaths('<Directory Name Here>'))`
@@ -17,6 +17,7 @@ On the final line of code, in the function "Averager" change the directory name 
 Run the code by giving the command `python average_face.py` after changing the name of directory in code.
 
 ## Face Swap
+### How to run
 On the final line of code, in the function "Averager" change the directory name to a folder that contains all images that you want to average and run the python code
     
    `base_face = cv2.imread('<Insert Input Image Name Here>', cv2.IMREAD_COLOR) `
