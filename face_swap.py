@@ -12,8 +12,8 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('data/shape_predictor_68_face_landmarks.dat')
 
 mdl_mean = (78.4263377603, 87.7689143744, 114.895847746)
-age = ['2', '6', '12', '20', '32', '43', '50', '60']
-gender = ['Male', 'Female']
+age_list = ['2', '6', '12', '20', '32', '43', '50', '60']
+gender_list = ['Male', 'Female']
 
 def model_initialization():
 
@@ -34,11 +34,11 @@ def age_prediction(age_net, gender_net, x, y, w, h, face_img):
         np.float32(face_img), 1, (227, 227), mdl_mean, swapRB=True)
     gender_net.setInput(blob)
     gender_preds = gender_net.forward()
-    gender = gender[gender_preds[0].argmax()]
+    gender = gender_list[gender_preds[0].argmax()]
 
     age_net.setInput(blob)
     age_preds = age_net.forward()
-    age = age[age_preds[0].argmax()]
+    age = age_list[age_preds[0].argmax()]
 
     return gender, age
 
@@ -155,23 +155,23 @@ def faceswap(base_face):
         if gender == 'Male':
             if int(age) <= 20:
                 swap_face = cv2.imread(
-                    r'./results/m/c/'+random.choice(os.listdir(r'./results/m/c/')), cv2.IMREAD_COLOR)
+                    r'./collage/m/c/'+random.choice(os.listdir(r'./collage/m/c/')), cv2.IMREAD_COLOR)
             elif 20 < int(age) <= 50:
                 swap_face = cv2.imread(
-                    r'./results/m/a/'+random.choice(os.listdir(r'./results/m/a/')), cv2.IMREAD_COLOR)
+                    r'./collage/m/a/'+random.choice(os.listdir(r'./collage/m/a/')), cv2.IMREAD_COLOR)
             elif int(age) > 50:
                 swap_face = cv2.imread(
-                    r'./results/m/o/'+random.choice(os.listdir(r'./results/m/o/')), cv2.IMREAD_COLOR)
+                    r'./collage/m/o/'+random.choice(os.listdir(r'./collage/m/o/')), cv2.IMREAD_COLOR)
         elif gender == 'Female':
             if int(age) <= 20:
                 swap_face = cv2.imread(
-                    r'./results/f/c/'+random.choice(os.listdir(r'./results/f/c/')), cv2.IMREAD_COLOR)
+                    r'./collage/f/c/'+random.choice(os.listdir(r'./collage/f/c/')), cv2.IMREAD_COLOR)
             elif 20 < int(age) <= 50:
                 swap_face = cv2.imread(
-                    r'./results/f/a/'+random.choice(os.listdir(r'./results/f/a/')), cv2.IMREAD_COLOR)
+                    r'./collage/f/a/'+random.choice(os.listdir(r'./collage/f/a/')), cv2.IMREAD_COLOR)
             elif int(age) > 50:
                 swap_face = cv2.imread(
-                    r'./results/f/o/'+random.choice(os.listdir(r'./results/f/o/')), cv2.IMREAD_COLOR)
+                    r'./collage/f/o/'+random.choice(os.listdir(r'./collage/f/o/')), cv2.IMREAD_COLOR)
         _, landmarks = landmark_detection(swap_face)
         base_landmarks = np.matrix(faces[1])
         face_landmarks = landmarks[0]
@@ -190,10 +190,9 @@ def faceswap(base_face):
 
     return base_face
 
-
+performance_dict = {}
 eye_landmarks = list(range(17, 27)) + list(range(36, 48))
 nose_and_mouth_landmarks = list(range(27, 35)) + list(range(48, 61))
-
-base_face = cv2.imread('./group.jpg', cv2.IMREAD_COLOR)
+base_face = cv2.imread('', cv2.IMREAD_COLOR) %insert the name of the image onto which to swap the face
 faces_swap = faceswap(base_face)
-cv2.imwrite("anonymous.png", faces_swap)
+cv2.imwrite("./anonymous.png", faces_swap)
