@@ -35,6 +35,6 @@ Run the code by giving the command `python face_swap.py` after changing the name
 ### Professor, Dr. Gholamreza Anbarjafari
 
 ## UNIVERSITY OF TARTU
-![UT LOGO](https://upload.wikimedia.org/wikipedia/en/thumb/3/39/Tartu_%C3%9Clikool_logo.svg/1200px-Tartu_%C3%9Clikool_logo.svg.png =250x250)
+![UT LOGO](https://ebi-europa.eu/wp-content/uploads/2016/12/logo_tartu_2.png)
 ### Faculty of Science and Technology
 ### Institute of Technology
