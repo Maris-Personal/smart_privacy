@@ -1,4 +1,4 @@
-# Smart Privacy
+# Privacy preserving using face replacement-based image anonymisation tool
 ## Bachelor's Thesis in University of Tartu
 ## Requirements
 
