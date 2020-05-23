@@ -5,3 +5,6 @@ __pycache__/
 images
 .vscode
 similarity.py
+*.ipynb
+*.csv
+im_sim_vis.py
